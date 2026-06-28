@@ -10,7 +10,8 @@ DB_NOTES: Dict[int, dict] = {
         "clinician_id": "DR-SMITH",
         "text": "Patient reports mild headache. Advised rest and hydration.",
         "signed": True,
-        "created_at": datetime.datetime(2026, 6, 26, 10, 0, 0)
+        "created_at": datetime.datetime(2026, 6, 26, 10, 0, 0),
+        "summary": None
     },
     2: {
         "id": 2,
@@ -18,9 +19,24 @@ DB_NOTES: Dict[int, dict] = {
         "clinician_id": "DR-SMITH",
         "text": "Routine checkup. Blood pressure is 120/80. Heart rate 72 bpm.",
         "signed": False,
-        "created_at": datetime.datetime(2026, 6, 27, 9, 30, 0)
+        "created_at": datetime.datetime(2026, 6, 27, 9, 30, 0),
+        "summary": None
     }
 }
+
+DB_CLINICIANS: Dict[str, dict] = {
+    "DR-SMITH": {"id": "DR-SMITH", "name": "Dr. Smith", "role": "clinician", "token": "token-smith-123"},
+    "DR-JONES": {"id": "DR-JONES", "name": "Dr. Jones", "role": "clinician", "token": "token-jones-456"},
+    "DR-ADMIN": {"id": "DR-ADMIN", "name": "Dr. Admin", "role": "admin", "token": "token-admin-789"}
+}
+
+def get_clinician_by_token(token: str) -> Optional[dict]:
+    for c in DB_CLINICIANS.values():
+        if c["token"] == token:
+            profile = c.copy()
+            profile.pop("token")
+            return profile
+    return None
 
 _next_id = 3
 
@@ -49,7 +65,8 @@ def create_note(patient_id: str, clinician_id: str, text: str) -> dict:
         "clinician_id": clinician_id,
         "text": text,
         "signed": False,
-        "created_at": now
+        "created_at": now,
+        "summary": None
     }
     DB_NOTES[_next_id] = note
     _next_id += 1
